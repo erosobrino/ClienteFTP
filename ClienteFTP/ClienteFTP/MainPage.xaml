@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ClienteFTP"
+             x:Class="ClienteFTP.MainPage">
+
+    <StackLayout BackgroundColor="LightBlue">
+        <Label Text="Cliente FTP" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Scale="2" Margin="20"/>
+        <Entry Placeholder="Busqueda" />
+        <ListView x:Name="Listado" HeightRequest="400"  >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal">
+                            <Image Source="{Binding Imagen}" />
+                            <Label Text="{Binding Nombre}"   TextColor="Black" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>
