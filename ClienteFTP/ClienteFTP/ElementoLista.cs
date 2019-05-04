@@ -7,16 +7,20 @@ namespace ClienteFTP
 {
     class ElementoLista
     {
-       private Image imagen;
+       private string imagen;
         string nombre;
         char tipo;
-        public Image Imagen { get => imagen; set => imagen = value; }
+        public string Imagen { get => imagen; set => imagen = value; }
         public string Nombre { get => nombre; set => nombre = value; }
         public char Tipo { get => tipo; set => tipo = value; }
 
-        public ElementoLista()
+        public ElementoLista(string nombreCompleto)
         {
-            Nombre = "hola";
+            if (nombreCompleto.StartsWith("D:"))
+                Imagen = "folder.png";
+            else
+                Imagen = "file.png";
+            Nombre = nombreCompleto.Substring(2);
         }
 
     }

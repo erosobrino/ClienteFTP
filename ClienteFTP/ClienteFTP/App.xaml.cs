@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Net.Sockets;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -6,11 +8,18 @@ namespace ClienteFTP
 {
     public partial class App : Application
     {
+        public static NetworkStream ns = null;
+        public static StreamReader sr = null;
+        public static StreamWriter sw = null;
+
+        public  PaginaInicio paginaInicio = null;
+        public static MainPage mainPage = null;
         public App()
         {
             InitializeComponent();
-
-            MainPage = new MainPage();
+            paginaInicio = new PaginaInicio();
+            MainPage = paginaInicio;
+            //MainPage = new MainPage();
         }
 
         protected override void OnStart()

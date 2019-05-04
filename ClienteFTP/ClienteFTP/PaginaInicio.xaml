@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClienteFTP.PaginaInicio">
+    
+    <StackLayout Orientation="Vertical" Margin="10">
+        <Label Text="Bienvenido" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" Scale="3" HeightRequest="40"/>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Dirección IP" VerticalTextAlignment="Center"/>
+            <Entry x:Name="txtIP" Placeholder="192.168.0.1" WidthRequest="150"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Puerto" VerticalTextAlignment="Center"/>
+            <Entry x:Name="txtPuerto" Keyboard="Numeric" MaxLength="5" WidthRequest="150"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Usuario" VerticalTextAlignment="Center"/>
+            <Entry x:Name="txtUsuario" WidthRequest="150" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Contraseña" VerticalTextAlignment="Center"/>
+            <Entry x:Name="txtContraseña" IsPassword="True" WidthRequest="150"/>
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Recordar Datos" VerticalTextAlignment="Center"/>
+            <Switch IsToggled="false" x:Name="chkDatos" />
+        </StackLayout>
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Auto Inicio" VerticalTextAlignment="Center"/>
+            <Switch IsToggled="false" x:Name="chkAuto"/>
+        </StackLayout>
+        <Button Text="Conectarse" x:Name="btnConectar" BackgroundColor="#FF4C9EF7" CornerRadius="10" Clicked="BtnConectar_Clicked"/>
+    </StackLayout>
+</ContentPage>
