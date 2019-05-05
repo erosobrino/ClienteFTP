@@ -7,7 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -23,7 +23,20 @@ namespace ClienteFTP
         public PaginaInicio()
         {
             InitializeComponent();
+
             this.BackgroundColor = Color.LightBlue;
+
+            chkDatos.IsToggled = Preferences.Get("recordar", false);
+            if (chkDatos.IsToggled)
+            {
+                txtIP.Text = Preferences.Get("ip", "");
+                txtPuerto.Text = Preferences.Get("puerto", "");
+                txtUsuario.Text = Preferences.Get("usuario", "");
+                txtContraseña.Text = Preferences.Get("contraseña", "");
+                chkAuto.IsToggled = Preferences.Get("auto", false);
+                if (chkAuto.IsToggled)
+                    BtnConectar_Clicked(this, new EventArgs());
+            }
         }
 
         private void BtnConectar_Clicked(object sender, EventArgs e)
@@ -73,6 +86,15 @@ namespace ClienteFTP
                 return;
             }
 
+            if (chkDatos.IsToggled)
+            {
+                Preferences.Set("recordar", true);
+                Preferences.Set("ip", txtIP.Text);
+                Preferences.Set("puerto", txtPuerto.Text);
+                Preferences.Set("usuario", txtUsuario.Text);
+                Preferences.Set("contraseña", txtContraseña.Text);
+                Preferences.Set("auto", chkAuto.IsToggled);
+            }
             ie = new IPEndPoint(ip.Address, puerto);
             sServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
@@ -90,18 +112,47 @@ namespace ClienteFTP
                             if (App.sr.ReadLine() == "valido")
                             {
                                 App.mainPage = new MainPage();
+                                ((NavigationPage)this.Parent).PushAsync(App.mainPage);
                             }
                             else
                                 DisplayAlert("Atención", "Tus credenciales No son válidos", "OK");
                         }
                     }
                 }
-
             }
-            catch (IOException)
+            catch (Exception)
             {
                 DisplayAlert("Atención", "No se ha podido establecer conexión con el servidor", "OK");
             }
+        }
+
+        private void ChkDatos_Toggled(object sender, ToggledEventArgs e)
+        {
+            if (chkDatos.IsToggled)
+                chkAuto.IsEnabled = true;
+            else
+            {
+                chkAuto.IsEnabled = false;
+                chkAuto.IsToggled = false;
+            }
+        }
+
+        private void TxtIP_Completed(object sender, EventArgs e)
+        {
+            txtPuerto.Focus();
+            txtPuerto.CursorPosition = txtPuerto.Text.Length;
+        }
+
+        private void TxtPuerto_Completed(object sender, EventArgs e)
+        {
+            txtUsuario.Focus();
+            txtUsuario.CursorPosition = txtUsuario.Text.Length;
+        }
+
+        private void TxtUsuario_Completed(object sender, EventArgs e)
+        {
+            txtContraseña.Focus();
+            txtContraseña.CursorPosition = txtContraseña.Text.Length;
         }
     }
 }
