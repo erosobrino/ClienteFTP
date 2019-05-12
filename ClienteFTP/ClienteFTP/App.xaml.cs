@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -11,12 +12,21 @@ namespace ClienteFTP
         public static NetworkStream ns = null;
         public static StreamReader sr = null;
         public static StreamWriter sw = null;
+        public static Socket sServer = null;
 
-        public PaginaInicio paginaInicio = null;
+        public static PaginaInicio paginaInicio = null;
         public static MainPage mainPage = null;
+        public static PaginaConfiguracion paginaConfiguracion= null;
+        public static int lugarDescargaId;
+
+        public static bool notificaciones;
         public App()
         {
             InitializeComponent();
+
+            notificaciones = Preferences.Get("notificaciones", false);
+            lugarDescargaId = Preferences.Get("lugarDescargaId", 0);
+
             paginaInicio = new PaginaInicio();
             MainPage = new NavigationPage(paginaInicio);
             //MainPage = new MainPage();

@@ -17,7 +17,6 @@ namespace ClienteFTP
     public partial class PaginaInicio : ContentPage
     {
         IPEndPoint ie;
-        Socket sServer;
         IPAddress ip;
         int puerto;
         public PaginaInicio()
@@ -34,8 +33,6 @@ namespace ClienteFTP
                 txtUsuario.Text = Preferences.Get("usuario", "");
                 txtContraseña.Text = Preferences.Get("contraseña", "");
                 chkAuto.IsToggled = Preferences.Get("auto", false);
-                if (chkAuto.IsToggled)
-                    BtnConectar_Clicked(this, new EventArgs());
             }
         }
 
@@ -96,29 +93,23 @@ namespace ClienteFTP
                 Preferences.Set("auto", chkAuto.IsToggled);
             }
             ie = new IPEndPoint(ip.Address, puerto);
-            sServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            App.sServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
-                sServer.Connect(ie);
-                using (App.ns = new NetworkStream(sServer))
+                App.sServer.Connect(ie);
+                App.ns = new NetworkStream(App.sServer);
+                App.sr = new StreamReader(App.ns);
+                App.sw = new StreamWriter(App.ns);
+                App.sr.ReadLine();
+                App.sw.WriteLine("=" + txtUsuario.Text + " =" + txtContraseña.Text);
+                App.sw.Flush();
+                if (App.sr.ReadLine() == "valido")
                 {
-                    using (App.sr = new StreamReader(App.ns))
-                    {
-                        using (App.sw = new StreamWriter(App.ns))
-                        {
-                            App.sr.ReadLine();
-                            App.sw.WriteLine("=" + txtUsuario.Text + " =" + txtContraseña.Text);
-                            App.sw.Flush();
-                            if (App.sr.ReadLine() == "valido")
-                            {
-                                App.mainPage = new MainPage();
-                                ((NavigationPage)this.Parent).PushAsync(App.mainPage);
-                            }
-                            else
-                                DisplayAlert("Atención", "Tus credenciales No son válidos", "OK");
-                        }
-                    }
+                    App.mainPage = new MainPage();
+                    ((NavigationPage)this.Parent).PushAsync(App.mainPage);
                 }
+                else
+                    DisplayAlert("Atención", "Tus credenciales No son válidos", "OK");
             }
             catch (Exception)
             {
@@ -153,6 +144,12 @@ namespace ClienteFTP
         {
             txtContraseña.Focus();
             txtContraseña.CursorPosition = txtContraseña.Text.Length;
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            if (chkAuto.IsToggled)
+                BtnConectar_Clicked(this, new EventArgs());
         }
     }
 }

@@ -2,13 +2,12 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:ClienteFTP"
-             x:Class="ClienteFTP.MainPage">
+             x:Class="ClienteFTP.MainPage" Title="Cliente FTP" BackgroundColor="Blue">
 
     <AbsoluteLayout>
         <StackLayout Margin="10">
-            <Label Text="Cliente FTP" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Scale="2" Margin="20"/>
             <Entry Placeholder="Busqueda" x:Name="txtBusqueda" TextChanged="TxtBusqueda_TextChanged"/>
-            <ListView x:Name="Listado">
+            <ListView x:Name="Listado" ItemSelected="Listado_ItemSelected">
                 <ListView.ItemTemplate >
                     <DataTemplate>
                         <ViewCell>
@@ -21,9 +20,9 @@
                 </ListView.ItemTemplate>
             </ListView>
         </StackLayout>
-        <ImageButton x:Name="fabVerMas" Source="fab1.png" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds=".95,.95,60,60" CornerRadius="100" BackgroundColor="#FF4C9EF7" Clicked="FabVermas_Clicked"/>
-        <ImageButton x:Name="fabDescargar" Source="download.png" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds=".95,.59,60,60" CornerRadius="100" BackgroundColor="#FF4C9EF7" Clicked="FabDescargar_Clicked"  Padding="10" IsVisible="False"/>
-        <ImageButton x:Name="fabUsuario" Source="user.png" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds=".95,.71,60,60" CornerRadius="100" BackgroundColor="#4C9EF7" Clicked="FabUsuario_Clicked" Padding="10" IsVisible="False"/>
-        <ImageButton x:Name="fabAjustes" Source="settings.png" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds=".95,.83,60,60" CornerRadius="100" BackgroundColor="#FF4C9EF7" Clicked="FabAjustes_Clicked" Padding="10" IsVisible="False"/>
+        <ImageButton x:Name="fabVerMas" Source="fab1.png" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds=".95,.95,55,55" CornerRadius="100" BackgroundColor="#FF4C9EF7" Clicked="FabVermas_Clicked"/>
+        <ImageButton x:Name="fabDescargar" Source="download.png" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds=".95,.59,55,55" CornerRadius="100" BackgroundColor="#FF4C9EF7" Clicked="FabDescargar_Clicked" Padding="10" IsVisible="False"/>
+        <ImageButton x:Name="fabUsuario" Source="user.png" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds=".95,.71,55,55" CornerRadius="100" BackgroundColor="#4C9EF7" Clicked="FabUsuario_Clicked" Padding="10" IsVisible="False"/>
+        <ImageButton x:Name="fabAjustes" Source="settings.png" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds=".95,.83,55,55" CornerRadius="100" BackgroundColor="#FF4C9EF7" Clicked="FabAjustes_Clicked" Padding="10" IsVisible="False"/>
     </AbsoluteLayout>
 </ContentPage>

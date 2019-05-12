@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClienteFTP.PaginaConfiguracion" Title="Configuración" BackgroundColor="Blue" >
+    <ContentPage.Content>
+        <StackLayout Margin="20,50,30,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.4*" />
+                    <ColumnDefinition Width="0.6*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Text="Recibir notificaciones" VerticalTextAlignment="Center"/>
+                <Switch Grid.Row="0" Grid.Column="1"  x:Name="chkNotificaciones" Toggled="ChkNotificaciones_Toggled"/>
+
+
+                <Label  Grid.Row="1" Grid.Column="0" Text="Directorio de Descarga" VerticalTextAlignment="Center"/>
+                <Picker Grid.Row="1" Grid.Column="1" x:Name="cboLugarDescarga"  SelectedIndexChanged="CboLugarDescarga_SelectedIndexChanged"/>
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

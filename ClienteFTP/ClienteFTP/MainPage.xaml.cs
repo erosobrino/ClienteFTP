@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,17 +15,34 @@ namespace ClienteFTP
         List<ElementoLista> lista = new List<ElementoLista>();
         List<ElementoLista> listaVisible = new List<ElementoLista>();
         bool menuPulsado = false;
+        string rutaInicio = "";
+
         public MainPage()
         {
             InitializeComponent();
 
-            lista.Add(new ElementoLista("F:dfasffdgdf"));
-            lista.Add(new ElementoLista("D:sdafsfsf"));
-            lista.Add(new ElementoLista("F:sdsdafsfsf"));
-
             this.BackgroundColor = Color.LightBlue;
-            Listado.ItemsSource = lista;
             Listado.SeparatorColor = Color.Black;
+            cargaLista();
+        }
+
+        private void cargaLista()
+        {
+            App.sw.WriteLine("LISTADO");
+            App.sw.Flush();
+            string nombres = App.sr.ReadLine();
+
+            lista.Clear();
+            string[] nombreSplit = nombres.Split('?');
+            foreach (string nombre in nombreSplit)
+            {
+                if (nombre != "")
+                    lista.Add(new ElementoLista(nombre));
+            }
+            if (rutaInicio != "")
+                lista.Insert(0, new ElementoLista("O:..."));
+            Listado.ItemsSource = null;
+            Listado.ItemsSource = lista;
         }
 
         private void TxtBusqueda_TextChanged(object sender, TextChangedEventArgs e)
@@ -43,7 +61,6 @@ namespace ClienteFTP
             else
                 Listado.ItemsSource = lista;
         }
-
         private void FabVermas_Clicked(object sender, EventArgs e)
         {
             menuPulsado = !menuPulsado;
@@ -57,18 +74,46 @@ namespace ClienteFTP
             fabAjustes.IsVisible = menuPulsado;
         }
 
-        private void FabDescargar_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
         private void FabAjustes_Clicked(object sender, EventArgs e)
         {
-
+            App.paginaConfiguracion = new PaginaConfiguracion();
+            ((NavigationPage)this.Parent).PushAsync(App.paginaConfiguracion);
         }
         private void FabUsuario_Clicked(object sender, EventArgs e)
         {
 
+        }
+
+        private void Listado_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            ElementoLista elemento = (ElementoLista)e.SelectedItem;
+            if (elemento.EsCarpeta)
+            {
+                App.sw.WriteLine("DIRECTORIO " + elemento.Nombre);
+                App.sw.Flush();
+                string msg = App.sr.ReadLine();
+                if (msg == "Valido")
+                {
+                    rutaInicio += '?' + elemento.Nombre;
+                    cargaLista();
+                }
+            }
+            else
+            {
+                if (elemento.Nombre == "...")
+                {
+                    App.sw.WriteLine("ATRAS");
+                    App.sw.Flush();
+                    rutaInicio = rutaInicio.Substring(0, rutaInicio.LastIndexOf('?'));
+                    cargaLista();
+                }
+            }
+        }
+
+        private void FabDescargar_Clicked(object sender, EventArgs e)
+        {
+            Guardado guardado = DependencyService.Get<Guardado>();
+            guardado.GuardarFichero("texto","aaaaaaaaaa", App.lugarDescargaId);
         }
     }
 }
