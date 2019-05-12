@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ClienteFTP.PaginaConfiguracion" Title="Configuración" BackgroundColor="Blue" >
+             x:Class="ClienteFTP.PaginaConfiguracion" Title="Configuración"  >
     <ContentPage.Content>
         <StackLayout Margin="20,50,30,20">
             <Grid>
@@ -19,7 +19,9 @@
 
                 <Label  Grid.Row="1" Grid.Column="0" Text="Directorio de Descarga" VerticalTextAlignment="Center"/>
                 <Picker Grid.Row="1" Grid.Column="1" x:Name="cboLugarDescarga"  SelectedIndexChanged="CboLugarDescarga_SelectedIndexChanged"/>
+
             </Grid>
+            <Button Text="Apagar Servidor" x:Name="btnApagarServer" BackgroundColor="Blue" CornerRadius="10"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

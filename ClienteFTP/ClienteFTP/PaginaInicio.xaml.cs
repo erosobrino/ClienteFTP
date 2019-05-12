@@ -105,6 +105,12 @@ namespace ClienteFTP
                 App.sw.Flush();
                 if (App.sr.ReadLine() == "valido")
                 {
+                    App.nombre = txtUsuario.Text;
+                    App.pass = txtContraseña.Text;
+
+                    App.esAdmin = true;
+                    //NuevoMetodo en server pedir admin
+
                     App.mainPage = new MainPage();
                     ((NavigationPage)this.Parent).PushAsync(App.mainPage);
                 }
@@ -150,6 +156,12 @@ namespace ClienteFTP
         {
             if (chkAuto.IsToggled)
                 BtnConectar_Clicked(this, new EventArgs());
+        }
+
+        public void errorPerdidaConexion()
+        {
+            DisplayAlert("Atención", "Se ha perdido la conexión, Conectate de nuevo", "OK");
+            ((NavigationPage)this.Parent).PushAsync(App.paginaInicio);
         }
     }
 }

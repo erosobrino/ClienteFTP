@@ -136,6 +136,7 @@
     <Content Include="fab2.png" />
     <Content Include="folder.png" />
     <Content Include="file.png" />
+    <Content Include="info.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="settings.png" />
     <Content Include="user.png" />

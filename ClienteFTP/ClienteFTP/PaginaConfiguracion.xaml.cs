@@ -35,33 +35,10 @@ namespace ClienteFTP
                     cboLugarDescarga.Items.Add("Librería de Videos");
                     break;
             }
-
-            //lugarDescarga.Add("Almacenamiento Interno", System.Environment.SpecialFolder.MyDocuments);
-            //lugarDescarga.Add("Almacenamiento Externo", System.Environment.SpecialFolder.MyComputer);
-
-            //foreach (string nombre in lugarDescarga.Keys)
-            //{
-            //    cboLugarDescarga.Items.Add(nombre);
-            //}
-
-            //DriveInfo[] allDrives = DriveInfo.GetDrives();
-
-            //foreach (DriveInfo d in allDrives)
-            //{
-            //    Console.WriteLine(d.RootDirectory);
-            //    Console.WriteLine("Drive {0}", d.Name);
-            //    Console.WriteLine("  Drive type: {0}", d.DriveType);
-
-            //    if (d.IsReady == true)
-            //    {
-            //        Console.WriteLine("Volume label: {0}", d.VolumeLabel);
-            //        Console.WriteLine("File system: {0}", d.DriveFormat);
-            //        Console.WriteLine("Available space to current user:{0, 15} ", ByteSize.FromBytes(d.AvailableFreeSpace));
-            //        Console.WriteLine("Total size of drive: {0, 15} bytes ", ByteSize.FromBytes(d.TotalSize));
-            //    }
-            //}
-
             cboLugarDescarga.SelectedIndex = App.lugarDescargaId;
+
+            btnApagarServer.IsVisible = App.esAdmin;
+            btnApagarServer.Clicked += async (sender, e) => await apagarServer();
         }
 
         private void ChkNotificaciones_Toggled(object sender, ToggledEventArgs e)
@@ -74,6 +51,39 @@ namespace ClienteFTP
         {
             Preferences.Set("lugarDescargaId", cboLugarDescarga.SelectedIndex);
             App.lugarDescargaId = cboLugarDescarga.SelectedIndex;
+        }
+
+        private void BtnApagarServer_Clicked(object sender, EventArgs e)
+        {
+
+        }
+
+        private async Task apagarServer()
+        {
+            try
+            {
+                var resultado = await DisplayAlert("Atención", "¿Desea apagar el servidor?", "Sí", "No");
+                if (resultado)
+                {
+                    App.sw.WriteLine("CERRAR");
+                    App.sw.Flush();
+
+                    await DisplayAlert("Atención", "Se ha apagado correctamente", "OK");
+
+                    if (App.paginaInicio != null)
+                        App.paginaInicio = new PaginaInicio();
+                    await ((NavigationPage)this.Parent).PushAsync(App.paginaInicio);
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex is IOException || ex is ObjectDisposedException)
+                {
+                    App.paginaInicio.errorPerdidaConexion();
+                    return;
+                }
+                throw;
+            }
         }
     }
 }

@@ -28,21 +28,33 @@ namespace ClienteFTP
 
         private void cargaLista()
         {
-            App.sw.WriteLine("LISTADO");
-            App.sw.Flush();
-            string nombres = App.sr.ReadLine();
-
-            lista.Clear();
-            string[] nombreSplit = nombres.Split('?');
-            foreach (string nombre in nombreSplit)
+            try
             {
-                if (nombre != "")
-                    lista.Add(new ElementoLista(nombre));
+                App.sw.WriteLine("LISTADO");
+                App.sw.Flush();
+                string nombres = App.sr.ReadLine();
+
+                lista.Clear();
+                string[] nombreSplit = nombres.Split('?');
+                foreach (string nombre in nombreSplit)
+                {
+                    if (nombre != "")
+                        lista.Add(new ElementoLista(nombre));
+                }
+                if (rutaInicio != "")
+                    lista.Insert(0, new ElementoLista("O:..."));
+                Listado.ItemsSource = null;
+                Listado.ItemsSource = lista;
             }
-            if (rutaInicio != "")
-                lista.Insert(0, new ElementoLista("O:..."));
-            Listado.ItemsSource = null;
-            Listado.ItemsSource = lista;
+            catch (Exception ex)
+            {
+                if (ex is IOException || ex is ObjectDisposedException)
+                {
+                    App.paginaInicio.errorPerdidaConexion();
+                    return;
+                }
+                throw;
+            }
         }
 
         private void TxtBusqueda_TextChanged(object sender, TextChangedEventArgs e)
@@ -81,39 +93,52 @@ namespace ClienteFTP
         }
         private void FabUsuario_Clicked(object sender, EventArgs e)
         {
-
+            App.configUsuario = new ConfigUsuario();
+            ((NavigationPage)this.Parent).PushAsync(App.configUsuario);
         }
 
         private void Listado_ItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            ElementoLista elemento = (ElementoLista)e.SelectedItem;
-            if (elemento.EsCarpeta)
+            try
             {
-                App.sw.WriteLine("DIRECTORIO " + elemento.Nombre);
-                App.sw.Flush();
-                string msg = App.sr.ReadLine();
-                if (msg == "Valido")
+                ElementoLista elemento = (ElementoLista)e.SelectedItem;
+                if (elemento.EsCarpeta)
                 {
-                    rutaInicio += '?' + elemento.Nombre;
-                    cargaLista();
+                    App.sw.WriteLine("DIRECTORIO " + elemento.Nombre);
+                    App.sw.Flush();
+                    string msg = App.sr.ReadLine();
+                    if (msg == "Valido")
+                    {
+                        rutaInicio += '?' + elemento.Nombre;
+                        cargaLista();
+                    }
+                }
+                else
+                {
+                    if (elemento.Nombre == "...")
+                    {
+                        App.sw.WriteLine("ATRAS");
+                        App.sw.Flush();
+                        rutaInicio = rutaInicio.Substring(0, rutaInicio.LastIndexOf('?'));
+                        cargaLista();
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                if (elemento.Nombre == "...")
+                if (ex is IOException || ex is ObjectDisposedException)
                 {
-                    App.sw.WriteLine("ATRAS");
-                    App.sw.Flush();
-                    rutaInicio = rutaInicio.Substring(0, rutaInicio.LastIndexOf('?'));
-                    cargaLista();
+                    App.paginaInicio.errorPerdidaConexion();
+                    return;
                 }
+                throw;
             }
         }
 
         private void FabDescargar_Clicked(object sender, EventArgs e)
         {
             Guardado guardado = DependencyService.Get<Guardado>();
-            guardado.GuardarFichero("texto","aaaaaaaaaa", App.lugarDescargaId);
+            guardado.GuardarFichero("texto", "aaaaaaaaaa", App.lugarDescargaId);
         }
     }
 }
