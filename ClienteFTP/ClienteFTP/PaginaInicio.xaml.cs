@@ -19,6 +19,7 @@ namespace ClienteFTP
         IPEndPoint ie;
         IPAddress ip;
         int puerto;
+        public int puertoArchivos;
         public PaginaInicio()
         {
             InitializeComponent();
@@ -30,6 +31,7 @@ namespace ClienteFTP
             {
                 txtIP.Text = Preferences.Get("ip", "");
                 txtPuerto.Text = Preferences.Get("puerto", "");
+                txtPuertoArchivos.Text = Preferences.Get("puertoArchivos", "");
                 txtUsuario.Text = Preferences.Get("usuario", "");
                 txtContraseña.Text = Preferences.Get("contraseña", "");
                 chkAuto.IsToggled = Preferences.Get("auto", false);
@@ -70,6 +72,30 @@ namespace ClienteFTP
                     return;
                 }
             }
+            if (txtPuertoArchivos.Text == "")
+            {
+                DisplayAlert("Atención", "Debes introducir el Puerto de archivos", "OK");
+                txtPuertoArchivos.Focus();
+                return;
+            }
+            else
+            {
+                puertoArchivos = Convert.ToInt32(txtPuertoArchivos.Text);
+                if (puertoArchivos < 0 || puertoArchivos > IPEndPoint.MaxPort)
+                {
+                    DisplayAlert("Atención", "Debes introducir un puerto de archivos válido", "OK");
+                    txtPuertoArchivos.Focus();
+                    return;
+                }
+            }
+
+            if (txtPuerto.Text == txtPuertoArchivos.Text)
+            {
+                DisplayAlert("Atención", "Los puertos tienen que ser distintos", "OK");
+                txtPuerto.Focus();
+                return;
+            }
+
             if (txtUsuario.Text == "")
             {
                 DisplayAlert("Atención", "Debes introducir el Usuario", "OK");
@@ -88,6 +114,7 @@ namespace ClienteFTP
                 Preferences.Set("recordar", true);
                 Preferences.Set("ip", txtIP.Text);
                 Preferences.Set("puerto", txtPuerto.Text);
+                Preferences.Set("puertoArchivos", txtPuertoArchivos.Text);
                 Preferences.Set("usuario", txtUsuario.Text);
                 Preferences.Set("contraseña", txtContraseña.Text);
                 Preferences.Set("auto", chkAuto.IsToggled);
@@ -142,8 +169,8 @@ namespace ClienteFTP
 
         private void TxtPuerto_Completed(object sender, EventArgs e)
         {
-            txtUsuario.Focus();
-            txtUsuario.CursorPosition = txtUsuario.Text.Length;
+            txtPuertoArchivos.Focus();
+            txtPuertoArchivos.CursorPosition = txtPuertoArchivos.Text.Length;
         }
 
         private void TxtUsuario_Completed(object sender, EventArgs e)
@@ -160,8 +187,22 @@ namespace ClienteFTP
 
         public void errorPerdidaConexion()
         {
+            //TODO poder reconectarse
             DisplayAlert("Atención", "Se ha perdido la conexión, Conectate de nuevo", "OK");
-            ((NavigationPage)this.Parent).PushAsync(App.paginaInicio);
+            App.sw.Close();
+            App.sr.Close();       
+            App.ns.Close();
+            App.sServer.Close();
+            App.paginaConfiguracion = null;
+            App.mainPage = null;
+            App.paginaInfo = null;
+            ((NavigationPage)this.Parent).PopToRootAsync();
+        }
+
+        private void TxtPuertoArchivos_Completed(object sender, EventArgs e)
+        {
+            txtUsuario.Focus();
+            txtUsuario.CursorPosition = txtUsuario.Text.Length;
         }
     }
 }

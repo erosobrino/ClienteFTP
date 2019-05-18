@@ -5,36 +5,42 @@ using Android.Support.V4.App;
 using Android.Views;
 using Java.IO;
 using System;
+using System.IO;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace ClienteFTP.Droid
 {
     class GuardarAndroid : Guardado
     {
-        public async Task GuardarFichero(string nombre, string texto, int idCarpeta)
+        public async Task<char> GuardarFichero(string nombre, NetworkStream strIn, int idCarpeta)
         {
             try
             {
                 Java.IO.File sdCard = Android.OS.Environment.ExternalStorageDirectory;
                 Java.IO.File dir = new Java.IO.File(sdCard.AbsolutePath);
-                Java.IO.File file = new Java.IO.File(dir, "iootext.txt");
+                Java.IO.File file = new Java.IO.File(dir, nombre);
                 if (!file.Exists())
                 {
 
                     file.CreateNewFile();
-                    FileWriter writer = new FileWriter(file);
-                    // Writes the content to the file
-                    writer.Write(texto);
+                    FileOutputStream writer = new FileOutputStream(file);
+                    var buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = strIn.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        writer.Write(buffer, 0, bytesRead);
+                    }
                     writer.Flush();
                     writer.Close();
-                    await App.Current.MainPage.DisplayAlert("Atención", "Fichero Creado", "OK");
+                    return 'C';
                 }
                 else
-                    await App.Current.MainPage.DisplayAlert("Atención", "Ya existe el fichero", "OK");
+                    return 'E';
             }
             catch
             {
-                await App.Current.MainPage.DisplayAlert("Atención", "Ya existe el fichero", "OK");
+                return 'N';
             }
         }
     }

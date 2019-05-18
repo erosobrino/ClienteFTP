@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -16,7 +19,8 @@ namespace ClienteFTP
         List<ElementoLista> listaVisible = new List<ElementoLista>();
         bool menuPulsado = false;
         string rutaInicio = "";
-
+        TcpListener listener;
+        TcpClient tcpClient;
         public MainPage()
         {
             InitializeComponent();
@@ -24,6 +28,13 @@ namespace ClienteFTP
             this.BackgroundColor = Color.LightBlue;
             Listado.SeparatorColor = Color.Black;
             cargaLista();
+
+            listener = new TcpListener(IPAddress.Any, App.paginaInicio.puertoArchivos);
+            listener.Start();
+
+            Thread hiloRecibos = new Thread(() => descargaArchivo());
+            hiloRecibos.IsBackground = true;
+            hiloRecibos.Start();
         }
 
         private void cargaLista()
@@ -43,17 +54,14 @@ namespace ClienteFTP
                 }
                 if (rutaInicio != "")
                     lista.Insert(0, new ElementoLista("O:..."));
+                lista.ElementAt(0).EsCarpeta = true;
                 Listado.ItemsSource = null;
                 Listado.ItemsSource = lista;
             }
             catch (Exception ex)
             {
-                if (ex is IOException || ex is ObjectDisposedException)
-                {
-                    App.paginaInicio.errorPerdidaConexion();
-                    return;
-                }
-                throw;
+                App.paginaInicio.errorPerdidaConexion();
+                return;
             }
         }
 
@@ -73,6 +81,7 @@ namespace ClienteFTP
             else
                 Listado.ItemsSource = lista;
         }
+
         private void FabVermas_Clicked(object sender, EventArgs e)
         {
             menuPulsado = !menuPulsado;
@@ -91,6 +100,7 @@ namespace ClienteFTP
             App.paginaConfiguracion = new PaginaConfiguracion();
             ((NavigationPage)this.Parent).PushAsync(App.paginaConfiguracion);
         }
+
         private void FabUsuario_Clicked(object sender, EventArgs e)
         {
             App.configUsuario = new ConfigUsuario();
@@ -102,7 +112,7 @@ namespace ClienteFTP
             try
             {
                 ElementoLista elemento = (ElementoLista)e.SelectedItem;
-                if (elemento.EsCarpeta)
+                if (elemento.EsCarpeta && elemento.Nombre != "...")
                 {
                     App.sw.WriteLine("DIRECTORIO " + elemento.Nombre);
                     App.sw.Flush();
@@ -126,19 +136,75 @@ namespace ClienteFTP
             }
             catch (Exception ex)
             {
-                if (ex is IOException || ex is ObjectDisposedException)
-                {
-                    App.paginaInicio.errorPerdidaConexion();
-                    return;
-                }
-                throw;
+                App.paginaInicio.errorPerdidaConexion();
+                return;
             }
         }
 
         private void FabDescargar_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                ElementoLista elementoSeleccionado = (ElementoLista)Listado.SelectedItem;
+                if (elementoSeleccionado == null)
+                {
+                    DisplayAlert("Atención", "Debes seleccionar un elemento", "OK");
+                }
+                else
+                {
+                    if (elementoSeleccionado.EsCarpeta)
+                        DisplayAlert("Atención", "Debes seleccionar un elemento", "OK");
+                    else
+                    {
+                        App.sw.WriteLine("FICHERO " + elementoSeleccionado.Nombre);
+                        App.sw.Flush();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                App.paginaInicio.errorPerdidaConexion();
+                return;
+            }
+        }
+
+        private void descargaArchivo()
+        {
             Guardado guardado = DependencyService.Get<Guardado>();
-            guardado.GuardarFichero("texto", "aaaaaaaaaa", App.lugarDescargaId);
+            while (true)
+            {
+                if (listener.Pending())
+                {
+                    tcpClient = listener.AcceptTcpClient();
+
+                    ElementoLista elementoSeleccionado = (ElementoLista)Listado.SelectedItem;
+                    switch (guardado.GuardarFichero(elementoSeleccionado.Nombre, tcpClient.GetStream(), App.lugarDescargaId).Result)
+                    {
+                        case 'C':
+                            Device.BeginInvokeOnMainThread(new Action(MensajeCreado));
+                            break;
+                        case 'N':
+                            Device.BeginInvokeOnMainThread(new Action(MensajeNoCreado));
+                            break;
+                        case 'E':
+                            Device.BeginInvokeOnMainThread(new Action(MensajeExiste));
+                            break;
+                    }
+                }
+            }
+        }
+
+        private void MensajeCreado()
+        {
+            DisplayAlert("Atención", "Fichero Creado", "OK");
+        }
+        private void MensajeNoCreado()
+        {
+            DisplayAlert("Atención", "No se ha podido crear", "OK");
+        }
+        private void MensajeExiste()
+        {
+            DisplayAlert("Atención", "El fichero ya existe", "OK");
         }
     }
 }

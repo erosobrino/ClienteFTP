@@ -53,11 +53,6 @@ namespace ClienteFTP
             App.lugarDescargaId = cboLugarDescarga.SelectedIndex;
         }
 
-        private void BtnApagarServer_Clicked(object sender, EventArgs e)
-        {
-
-        }
-
         private async Task apagarServer()
         {
             try
@@ -77,12 +72,8 @@ namespace ClienteFTP
             }
             catch (Exception ex)
             {
-                if (ex is IOException || ex is ObjectDisposedException)
-                {
                     App.paginaInicio.errorPerdidaConexion();
                     return;
-                }
-                throw;
             }
         }
     }

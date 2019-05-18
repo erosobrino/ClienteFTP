@@ -16,17 +16,20 @@
             <Label Grid.Row="1" Grid.Column="0" Text="Puerto" VerticalTextAlignment="Center"/>
             <Entry Grid.Row="1" Grid.Column="1" x:Name="txtPuerto" Keyboard="Numeric" MaxLength="5" Completed="TxtPuerto_Completed"/>
 
-            <Label Grid.Row="2" Grid.Column="0" Text="Usuario" VerticalTextAlignment="Center"/>
-            <Entry Grid.Row="2" Grid.Column="1" x:Name="txtUsuario" Completed="TxtUsuario_Completed"/>
+            <Label Grid.Row="2" Grid.Column="0" Text="Puerto archivos" VerticalTextAlignment="Center"/>
+            <Entry Grid.Row="2" Grid.Column="1" x:Name="txtPuertoArchivos" Keyboard="Numeric" MaxLength="5" Completed="TxtPuertoArchivos_Completed"/>
 
-            <Label Grid.Row="3" Grid.Column="0" Text="Contraseña" VerticalTextAlignment="Center"/>
-            <Entry Grid.Row="3" Grid.Column="1" x:Name="txtContraseña" IsPassword="True"/>
+            <Label Grid.Row="3" Grid.Column="0" Text="Usuario" VerticalTextAlignment="Center"/>
+            <Entry Grid.Row="3" Grid.Column="1" x:Name="txtUsuario" Completed="TxtUsuario_Completed"/>
 
-            <Label Grid.Row="4" Grid.Column="0" Text="Recordar Datos" VerticalTextAlignment="Center"/>
-            <Switch Grid.Row="4" Grid.Column="1" x:Name="chkDatos" Toggled="ChkDatos_Toggled"/>
+            <Label Grid.Row="4" Grid.Column="0" Text="Contraseña" VerticalTextAlignment="Center"/>
+            <Entry Grid.Row="4" Grid.Column="1" x:Name="txtContraseña" IsPassword="True"/>
 
-            <Label Grid.Row="5" Grid.Column="0" Text="Auto Inicio" VerticalTextAlignment="Center"/>
-            <Switch Grid.Row="5" Grid.Column="1" x:Name="chkAuto" IsEnabled="False" TabIndex="5" />
+            <Label Grid.Row="5" Grid.Column="0" Text="Recordar Datos" VerticalTextAlignment="Center"/>
+            <Switch Grid.Row="5" Grid.Column="1" x:Name="chkDatos" Toggled="ChkDatos_Toggled"/>
+
+            <Label Grid.Row="6" Grid.Column="0" Text="Auto Inicio" VerticalTextAlignment="Center"/>
+            <Switch Grid.Row="6" Grid.Column="1" x:Name="chkAuto" IsEnabled="False" TabIndex="5" />
         </Grid>
         <Button Text="Conectarse" x:Name="btnConectar" BackgroundColor="#FF4C9EF7" CornerRadius="10" Clicked="BtnConectar_Clicked"/>
     </StackLayout>

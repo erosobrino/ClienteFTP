@@ -9,11 +9,9 @@ namespace ClienteFTP
     {
         private string imagen;
         private string nombre;
-        private char tipo;
         private bool esCarpeta = false;
         public string Imagen { get => imagen; set => imagen = value; }
         public string Nombre { get => nombre; set => nombre = value; }
-        public char Tipo { get => tipo; set => tipo = value; }
         public bool EsCarpeta { get => esCarpeta; set => esCarpeta = value; }
 
         public ElementoLista(string nombreCompleto)

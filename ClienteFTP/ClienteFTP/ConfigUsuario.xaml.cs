@@ -72,12 +72,8 @@ namespace ClienteFTP
             }
             catch (Exception ex)
             {
-                if (ex is IOException || ex is ObjectDisposedException)
-                {
                     App.paginaInicio.errorPerdidaConexion();
                     return;
-                }
-                throw;
             }
         }
 

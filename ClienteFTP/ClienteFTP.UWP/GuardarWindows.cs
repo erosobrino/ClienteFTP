@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Popups;
 
@@ -7,7 +9,7 @@ namespace ClienteFTP.UWP
 {
     class GuardarWindows : Guardado
     {
-        public async System.Threading.Tasks.Task GuardarFichero(string nombre, string texto, int idCarpeta)
+        public async Task<char> GuardarFichero(string nombre, NetworkStream strIn, int idCarpeta)
         {
             try
             {
@@ -18,29 +20,55 @@ namespace ClienteFTP.UWP
                         fichero = await DownloadsFolder.CreateFileAsync(nombre, CreationCollisionOption.FailIfExists);
                         break;
                     case 1:
+                        try
+                        {
+                            StorageFile file = await KnownFolders.MusicLibrary.GetFileAsync(nombre);
+                        }
+                        catch
+                        {
+                            return 'E';
+                        }
                         fichero = await KnownFolders.MusicLibrary.CreateFileAsync(nombre, CreationCollisionOption.FailIfExists);
                         break;
                     case 2:
+                        try
+                        {
+                            StorageFile file = await KnownFolders.VideosLibrary.GetFileAsync(nombre);
+                        }
+                        catch
+                        {
+                            return 'E';
+                        }
                         fichero = await KnownFolders.VideosLibrary.CreateFileAsync(nombre, CreationCollisionOption.FailIfExists);
                         break;
                 }
                 if (fichero != null)
                 {
-                    using (Stream str = await fichero.OpenStreamForWriteAsync())
+                    using (Stream strOut = await fichero.OpenStreamForWriteAsync())
                     {
-                        using (StreamWriter streamWriter = new StreamWriter(str))
+                        var buffer = new byte[1024];
+                        int bytesRead;
+                        while ((bytesRead = strIn.Read(buffer, 0, buffer.Length)) > 0)
                         {
-                            streamWriter.WriteLine(texto);
+                            strOut.Write(buffer, 0, bytesRead);
                         }
                     }
+                    return 'C';
                 }
-                MessageDialog mensaje = new MessageDialog("Fichero Creado");
-                await mensaje.ShowAsync();
+                return 'N';
             }
             catch (Exception)
             {
-                MessageDialog mensaje = new MessageDialog("Ya existe el fichero");
-                await mensaje.ShowAsync();
+                if (idCarpeta == 0)
+                {
+                    StorageFile fichero = await DownloadsFolder.CreateFileAsync(nombre, CreationCollisionOption.OpenIfExists);
+                    if (fichero != null)
+                        return 'E';
+                    else
+                        return 'N';
+                }
+                else
+                    return 'N';
             }
         }
     }
