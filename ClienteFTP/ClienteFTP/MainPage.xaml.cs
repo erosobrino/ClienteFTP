@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ByteSizeLib;
+using Plugin.LocalNotifications;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -19,8 +21,11 @@ namespace ClienteFTP
         List<ElementoLista> listaVisible = new List<ElementoLista>();
         bool menuPulsado = false;
         string rutaInicio = "";
-        TcpListener listener;
-        TcpClient tcpClient;
+        public TcpListener listener;
+        public TcpClient tcpClient;
+        public Thread hiloRecibos;
+        public bool parar = false;
+        InterfazCodigoEspecifico interfazCodigo = DependencyService.Get<InterfazCodigoEspecifico>();
         public MainPage()
         {
             InitializeComponent();
@@ -32,9 +37,17 @@ namespace ClienteFTP
             listener = new TcpListener(IPAddress.Any, App.paginaInicio.puertoArchivos);
             listener.Start();
 
-            Thread hiloRecibos = new Thread(() => descargaArchivo());
+            hiloRecibos = new Thread(() => descargaArchivo());
             hiloRecibos.IsBackground = true;
             hiloRecibos.Start();
+
+            fabDescargar.Clicked += CompruebaEspacioDescarga;
+        }
+
+        private async void CompruebaEspacioDescarga(object sender, EventArgs e)
+        {
+            App.espacioLibre = await interfazCodigo.espacioLibre(App.lugarDescargaId);
+            DescargarMsg();
         }
 
         private void cargaLista()
@@ -141,7 +154,7 @@ namespace ClienteFTP
             }
         }
 
-        private void FabDescargar_Clicked(object sender, EventArgs e)
+        private void DescargarMsg()
         {
             try
             {
@@ -156,8 +169,17 @@ namespace ClienteFTP
                         DisplayAlert("Atención", "Debes seleccionar un elemento", "OK");
                     else
                     {
-                        App.sw.WriteLine("FICHERO " + elementoSeleccionado.Nombre);
-                        App.sw.Flush();
+                        ByteSize tamañoFichero = new ByteSize(elementoSeleccionado.Tamaño);
+                        if (App.espacioLibre > elementoSeleccionado.Tamaño || (Device.RuntimePlatform == "UWP" && App.lugarDescargaId == 0))
+                        {
+                            App.sw.WriteLine("FICHERO " + elementoSeleccionado.Nombre);
+                            App.sw.Flush();
+                            DisplayAlert("Atención", "El fichero ocupa " + tamañoFichero.ToString(), "OK");
+                        }
+                        else
+                        {
+                            DisplayAlert("Atención", "El fichero ocupa " + tamañoFichero.ToString() + " y no hay espacio suficiente", "OK");
+                        }
                     }
                 }
             }
@@ -170,29 +192,40 @@ namespace ClienteFTP
 
         private void descargaArchivo()
         {
-            Guardado guardado = DependencyService.Get<Guardado>();
-            while (true)
+            while (parar)
             {
-                if (listener.Pending())
-                {
-                    tcpClient = listener.AcceptTcpClient();
-
-                    ElementoLista elementoSeleccionado = (ElementoLista)Listado.SelectedItem;
-                    switch (guardado.GuardarFichero(elementoSeleccionado.Nombre, tcpClient.GetStream(), App.lugarDescargaId).Result)
+                if (listener != null)
+                    if (listener.Pending())
                     {
-                        case 'C':
-                            Device.BeginInvokeOnMainThread(new Action(MensajeCreado));
-                            break;
-                        case 'N':
-                            Device.BeginInvokeOnMainThread(new Action(MensajeNoCreado));
-                            break;
-                        case 'E':
-                            Device.BeginInvokeOnMainThread(new Action(MensajeExiste));
-                            break;
+                        tcpClient = listener.AcceptTcpClient();
+
+                        ElementoLista elementoSeleccionado = (ElementoLista)Listado.SelectedItem;
+
+                        switch (interfazCodigo.GuardarFichero(elementoSeleccionado.Nombre, tcpClient.GetStream(), App.lugarDescargaId).Result)
+                        {
+                            case 'C':
+                                if (App.notificaciones)
+                                    CrossLocalNotifications.Current.Show("ClienteFTP", "Fichero Creado");
+                                if (App.dialogos)
+                                    Device.BeginInvokeOnMainThread(new Action(MensajeCreado));
+                                break;
+                            case 'N':
+                                if (App.notificaciones)
+                                    CrossLocalNotifications.Current.Show("ClienteFTP", "No se ha podido descargar el ichero");
+                                if (App.dialogos)
+                                    Device.BeginInvokeOnMainThread(new Action(MensajeNoCreado));
+                                break;
+                            case 'E':
+                                if (App.notificaciones)
+                                    CrossLocalNotifications.Current.Show("ClienteFTP", "El fichero ya existe");
+                                if (App.dialogos)
+                                    Device.BeginInvokeOnMainThread(new Action(MensajeExiste));
+                                break;
+                        }
                     }
-                }
             }
         }
+
 
         private void MensajeCreado()
         {

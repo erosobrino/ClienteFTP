@@ -11,8 +11,18 @@ using System.Threading.Tasks;
 
 namespace ClienteFTP.Droid
 {
-    class GuardarAndroid : Guardado
+    class InterfazCodigoEspecificoAndroid : InterfazCodigoEspecifico
     {
+        public async Task<long> espacioLibre(int idCarpeta)
+        {
+            return Android.OS.Environment.RootDirectory.UsableSpace;
+        }
+
+        public async Task<long> espacioTotal(int idCarpeta)
+        {
+            return Android.OS.Environment.RootDirectory.TotalSpace;
+        }
+
         public async Task<char> GuardarFichero(string nombre, NetworkStream strIn, int idCarpeta)
         {
             try

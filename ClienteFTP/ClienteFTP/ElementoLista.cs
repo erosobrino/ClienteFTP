@@ -10,9 +10,11 @@ namespace ClienteFTP
         private string imagen;
         private string nombre;
         private bool esCarpeta = false;
+        private int tamaño;
         public string Imagen { get => imagen; set => imagen = value; }
         public string Nombre { get => nombre; set => nombre = value; }
         public bool EsCarpeta { get => esCarpeta; set => esCarpeta = value; }
+        public int Tamaño { get => tamaño; set => tamaño = value; }
 
         public ElementoLista(string nombreCompleto)
         {
@@ -20,6 +22,7 @@ namespace ClienteFTP
             {
                 Imagen = "folder.png";
                 EsCarpeta = true;
+                Nombre = nombreCompleto.Substring(2);
             }
             else
             {
@@ -28,8 +31,9 @@ namespace ClienteFTP
                     Imagen = "file.png";
                     EsCarpeta = false;
                 }
+                Nombre = nombreCompleto.Substring(2, nombreCompleto.IndexOf('#')-2);
+                Tamaño = Convert.ToInt32(nombreCompleto.Substring(nombreCompleto.IndexOf('#')+1));
             }
-            Nombre = nombreCompleto.Substring(2);
         }
 
     }

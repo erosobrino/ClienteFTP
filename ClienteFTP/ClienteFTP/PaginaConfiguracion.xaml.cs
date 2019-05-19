@@ -14,10 +14,7 @@ namespace ClienteFTP
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PaginaConfiguracion : ContentPage
     {
-        public Dictionary<string, System.Environment.SpecialFolder> lugarDescarga = new Dictionary<string, System.Environment.SpecialFolder>();
-        private const long Kb = 1024;
-        private const long Mb = Kb * 1024;
-        private const long Gb = Mb * 1024;
+        InterfazCodigoEspecifico interfazCodigo = DependencyService.Get<InterfazCodigoEspecifico>();
         public PaginaConfiguracion()
         {
             InitializeComponent();
@@ -37,20 +34,34 @@ namespace ClienteFTP
             }
             cboLugarDescarga.SelectedIndex = App.lugarDescargaId;
 
+            cboLugarDescarga.SelectedIndexChanged += cargaDatosEspacio;
+
             btnApagarServer.IsVisible = App.esAdmin;
             btnApagarServer.Clicked += async (sender, e) => await apagarServer();
+
+            chkAuto.IsToggled = Preferences.Get("auto", false);
         }
 
         private void ChkNotificaciones_Toggled(object sender, ToggledEventArgs e)
         {
             Preferences.Set("notificaciones", chkNotificaciones.IsToggled);
             App.notificaciones = chkNotificaciones.IsToggled;
+            if (chkNotificaciones.IsToggled)
+                chkDialogos.IsToggled = false;
         }
 
         private void CboLugarDescarga_SelectedIndexChanged(object sender, EventArgs e)
         {
             Preferences.Set("lugarDescargaId", cboLugarDescarga.SelectedIndex);
             App.lugarDescargaId = cboLugarDescarga.SelectedIndex;
+
+        }
+        private async void cargaDatosEspacio(object sender, EventArgs e)
+        {
+            ByteSize libre = new ByteSize(await interfazCodigo.espacioLibre(cboLugarDescarga.SelectedIndex));
+            ByteSize total = new ByteSize(await interfazCodigo.espacioTotal(cboLugarDescarga.SelectedIndex));
+            string cadena = String.Format("{0:0.00}GB/{1:0.00}GB {2:0.0}%", libre.GigaBytes, total.GigaBytes, (total.GigaBytes - libre.GigaBytes) / total.GigaBytes * 100);
+            txtEspacio.Text = cadena;
         }
 
         private async Task apagarServer()
@@ -72,9 +83,27 @@ namespace ClienteFTP
             }
             catch (Exception ex)
             {
-                    App.paginaInicio.errorPerdidaConexion();
-                    return;
+                App.paginaInicio.errorPerdidaConexion();
+                return;
             }
+        }
+
+        private void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            cargaDatosEspacio(this, new EventArgs());
+        }
+
+        private void ChkDialogos_Toggled(object sender, ToggledEventArgs e)
+        {
+            Preferences.Set("dialogos", chkDialogos.IsToggled);
+            App.dialogos = chkDialogos.IsToggled;
+            if (chkDialogos.IsToggled)
+                chkNotificaciones.IsToggled = false;
+        }
+
+        private void ChkAuto_Toggled(object sender, ToggledEventArgs e)
+        {
+            Preferences.Set("auto", chkAuto.IsToggled);
         }
     }
 }

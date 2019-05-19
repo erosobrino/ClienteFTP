@@ -1,7 +1,10 @@
-﻿using ClienteFTP.UWP;
+﻿using System;
+using ClienteFTP.UWP;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Xamarin.Forms;
 
-[assembly: Dependency(typeof(GuardarWindows))]
+[assembly: Dependency(typeof(InterfazCodigoEspecificoWindows))]
 namespace ClienteFTP.UWP
 {
     public sealed partial class MainPage
@@ -10,6 +13,7 @@ namespace ClienteFTP.UWP
         {
             this.InitializeComponent();
             LoadApplication(new ClienteFTP.App());
+
         }
     }
 }

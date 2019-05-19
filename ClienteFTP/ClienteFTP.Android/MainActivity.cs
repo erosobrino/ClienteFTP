@@ -3,12 +3,13 @@ using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using ClienteFTP.Droid;
+using Plugin.LocalNotifications;
 using Xamarin.Forms;
 
-[assembly: Dependency(typeof(GuardarAndroid))]
+[assembly: Dependency(typeof(InterfazCodigoEspecificoAndroid))]
 namespace ClienteFTP.Droid
 {
-    [Activity(Label = "ClienteFTP", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "ClienteFTP", Icon = "@drawable/icono", Theme = "@style/MainTheme", MainLauncher = true, ScreenOrientation = ScreenOrientation.Portrait, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         readonly string[] Permission =
@@ -29,6 +30,8 @@ namespace ClienteFTP.Droid
                 RequestPermissions(Permission, RequestId);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
+
+            LocalNotificationsImplementation.NotificationIconId = Resource.Drawable.icono;
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

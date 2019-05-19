@@ -3,12 +3,27 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.FileProperties;
 using Windows.UI.Popups;
 
 namespace ClienteFTP.UWP
 {
-    class GuardarWindows : Guardado
+    class InterfazCodigoEspecificoWindows : InterfazCodigoEspecifico
     {
+        public async Task<long> espacioLibre(int idCarpeta)
+        {
+            StorageFolder carpeta = ApplicationData.Current.LocalFolder;
+            var propiedades = await carpeta.Properties.RetrievePropertiesAsync(new string[] { "System.FreeSpace" });
+            return Convert.ToInt64(propiedades["System.FreeSpace"]);
+        }
+
+        public async Task<long> espacioTotal(int idCarpeta)
+        {
+            StorageFolder carpeta = ApplicationData.Current.LocalFolder;
+            var propiedades = await carpeta.Properties.RetrievePropertiesAsync(new string[] { "System.Capacity" });
+            return Convert.ToInt64(propiedades["System.Capacity"]);
+        }
+
         public async Task<char> GuardarFichero(string nombre, NetworkStream strIn, int idCarpeta)
         {
             try

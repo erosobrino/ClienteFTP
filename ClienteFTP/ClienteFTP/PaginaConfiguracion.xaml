@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="ClienteFTP.PaginaConfiguracion" Title="Configuración"  >
+             x:Class="ClienteFTP.PaginaConfiguracion" Title="Configuración" Appearing="ContentPage_Appearing"  >
     <ContentPage.Content>
-        <StackLayout Margin="20,50,30,20">
+        <StackLayout Margin="20,20,30,20">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.4*" />
@@ -15,11 +15,18 @@
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" Text="Recibir notificaciones" VerticalTextAlignment="Center"/>
                 <Switch Grid.Row="0" Grid.Column="1"  x:Name="chkNotificaciones" Toggled="ChkNotificaciones_Toggled"/>
+               
+                <Label Grid.Row="1" Grid.Column="0" Text="Recibir dialogos" VerticalTextAlignment="Center"/>
+                <Switch Grid.Row="1" Grid.Column="1"  x:Name="chkDialogos" Toggled="ChkDialogos_Toggled"/>
 
+                <Label Grid.Row="2" Grid.Column="0" Text="Auto Inicio" VerticalTextAlignment="Center"/>
+                <Switch Grid.Row="2" Grid.Column="1"  x:Name="chkAuto" Toggled="ChkAuto_Toggled"/>
+                
+                <Label  Grid.Row="3" Grid.Column="0" Text="Directorio de Descarga" VerticalTextAlignment="Center"/>
+                <Picker Grid.Row="3" Grid.Column="1" x:Name="cboLugarDescarga"  SelectedIndexChanged="CboLugarDescarga_SelectedIndexChanged"/>
 
-                <Label  Grid.Row="1" Grid.Column="0" Text="Directorio de Descarga" VerticalTextAlignment="Center"/>
-                <Picker Grid.Row="1" Grid.Column="1" x:Name="cboLugarDescarga"  SelectedIndexChanged="CboLugarDescarga_SelectedIndexChanged"/>
-
+                <Label  Grid.Row="4" Grid.Column="0" Text="Espacio Disco" VerticalTextAlignment="Center"/>
+                <Label  Grid.Row="4" Grid.Column="1" x:Name="txtEspacio" VerticalTextAlignment="Center"/>
             </Grid>
             <Button Text="Apagar Servidor" x:Name="btnApagarServer" BackgroundColor="Blue" CornerRadius="10"/>
         </StackLayout>
