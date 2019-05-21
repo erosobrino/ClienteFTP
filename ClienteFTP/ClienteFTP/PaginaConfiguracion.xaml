@@ -29,6 +29,7 @@
                 <Label  Grid.Row="4" Grid.Column="1" x:Name="txtEspacio" VerticalTextAlignment="Center"/>
             </Grid>
             <Button Text="Apagar Servidor" x:Name="btnApagarServer" BackgroundColor="Blue" CornerRadius="10"/>
+            <Button Text="Configurar usuarios" x:Name="btnConfigUsuarios" BackgroundColor="Blue" CornerRadius="10" Clicked="BtnConfigUsuarios_Clicked"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

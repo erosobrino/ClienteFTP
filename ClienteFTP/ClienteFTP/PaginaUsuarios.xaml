@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClienteFTP.PaginaUsuarios" Title="Usuarios">
+    <AbsoluteLayout>
+        <StackLayout Margin="10">
+            <Grid Margin="10">
+                <Label Grid.Column="1" Text="ID"   TextColor="Black" VerticalTextAlignment="Center"/>
+                <Label Grid.Column="2" Text="Nombre"   TextColor="Black" VerticalTextAlignment="Center"/>
+                <Label Grid.Column="3" Text="Contraseña"   TextColor="Black" VerticalTextAlignment="Center"/>
+                <Label Grid.Column="5" Text="Admin"   TextColor="Black" VerticalTextAlignment="Center"/>
+            </Grid>
+            <ListView x:Name="ListadoUsuarios" SelectionMode="None">
+                <ListView.ItemTemplate >
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid Margin="10">
+                                <ImageButton Grid.Column="0" WidthRequest="15" HeightRequest="15" x:Name="btnModificar" Source="edit.png" Clicked="BtnModificar_Clicked" BackgroundColor="Transparent" CommandParameter="{Binding Id}"/>
+                                <Label Grid.Column="1" Text="{Binding Id}"   TextColor="Black" VerticalTextAlignment="Center"/>
+                                <Label Grid.Column="2" Text="{Binding Nombre}"   TextColor="Black" VerticalTextAlignment="Center"/>
+                                <Label Grid.Column="3" Text="{Binding Contraseña}"   TextColor="Black" VerticalTextAlignment="Center"/>
+                                <Label Grid.Column="4" Text="{Binding EsAdmin}"   TextColor="Black" VerticalTextAlignment="Center"/>
+                                <ImageButton Grid.Column="5"  WidthRequest="15" HeightRequest="15" x:Name="btnEliminar" Source="delete.png" Clicked="BtnEliminar_Clicked" BackgroundColor="Transparent" CommandParameter="{Binding Id}"/>
+                             </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+        <ImageButton x:Name="fabAdd" Source="add.png" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds=".95,.95,55,55" CornerRadius="100" BackgroundColor="#FF4C9EF7" Clicked="FabAdd_Clicked" Padding="10"/>
+    </AbsoluteLayout>
+</ContentPage>

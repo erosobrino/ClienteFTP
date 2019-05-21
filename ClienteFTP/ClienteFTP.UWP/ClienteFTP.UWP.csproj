@@ -113,6 +113,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="add.png" />
     <Content Include="Assets\BadgeLogo.scale-100.png" />
     <Content Include="Assets\BadgeLogo.scale-125.png" />
     <Content Include="Assets\BadgeLogo.scale-150.png" />
@@ -163,7 +164,9 @@
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />
     <Content Include="Assets\Wide310x150Logo.scale-400.png" />
+    <Content Include="delete.png" />
     <Content Include="download.png" />
+    <Content Include="edit.png" />
     <Content Include="fab1.png" />
     <Content Include="fab2.png" />
     <Content Include="folder.png" />

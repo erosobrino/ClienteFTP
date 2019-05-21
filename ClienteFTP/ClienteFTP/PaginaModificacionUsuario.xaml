@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ClienteFTP.PaginaModificacionUsuario">
+    <ContentPage.Content>
+        <StackLayout Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="2" Grid.Column="0" Text="Nombre" VerticalTextAlignment="Center"/>
+                <Entry Grid.Row="2" Grid.Column="1" x:Name="txtNombre" Completed="TxtNombre_Completed"/>
+
+                <Label Grid.Row="3" Grid.Column="0" Text="Contraseña" VerticalTextAlignment="Center"/>
+                <Entry Grid.Row="3" Grid.Column="1" x:Name="txtContraseña" Completed="TxtContraseña_Completed"/>
+
+                <Label Grid.Row="4" Grid.Column="0" Text="Es Admin" VerticalTextAlignment="Center"/>
+                <Switch Grid.Row="4" Grid.Column="1" x:Name="chkAdmin" />
+            </Grid>
+
+            <StackLayout Orientation="Horizontal" Margin="0,40,0,20">
+                <Button Text="Cancelar" x:Name="btnCancelar" BackgroundColor="Red" Clicked="BtnCancelar_Clicked" HorizontalOptions="FillAndExpand" CornerRadius="10"/>
+                <Button Text="Aceptar" x:Name="btnAceptar" BackgroundColor="Blue" Clicked="BtnAceptar_Clicked" HorizontalOptions="FillAndExpand" CornerRadius="10" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

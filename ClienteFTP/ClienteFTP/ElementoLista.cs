@@ -30,9 +30,11 @@ namespace ClienteFTP
                 {
                     Imagen = "file.png";
                     EsCarpeta = false;
+                    Tamaño = Convert.ToInt32(nombreCompleto.Substring(nombreCompleto.IndexOf('#') + 1));
+                    Nombre = nombreCompleto.Substring(2, nombreCompleto.IndexOf('#') - 2);
                 }
-                Nombre = nombreCompleto.Substring(2, nombreCompleto.IndexOf('#')-2);
-                Tamaño = Convert.ToInt32(nombreCompleto.Substring(nombreCompleto.IndexOf('#')+1));
+                else
+                    Nombre = nombreCompleto.Substring(2);
             }
         }
 

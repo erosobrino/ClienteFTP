@@ -42,6 +42,13 @@ namespace ClienteFTP
             hiloRecibos.Start();
 
             fabDescargar.Clicked += CompruebaEspacioDescarga;
+
+            NavigationPage.SetHasBackButton(this, false);
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            return true;
         }
 
         private async void CompruebaEspacioDescarga(object sender, EventArgs e)
@@ -225,7 +232,6 @@ namespace ClienteFTP
                     }
             }
         }
-
 
         private void MensajeCreado()
         {

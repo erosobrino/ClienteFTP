@@ -27,7 +27,6 @@ namespace ClienteFTP
         private void BtnCancelar_Clicked(object sender, EventArgs e)
         {
             this.Navigation.PopAsync();
-            this.Navigation.PopToRootAsync();
         }
 
         private void BtnAceptar_Clicked(object sender, EventArgs e)

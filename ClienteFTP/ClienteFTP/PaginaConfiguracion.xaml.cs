@@ -38,6 +38,7 @@ namespace ClienteFTP
 
             btnApagarServer.IsVisible = App.esAdmin;
             btnApagarServer.Clicked += async (sender, e) => await apagarServer();
+            btnConfigUsuarios.IsVisible = App.esAdmin;
 
             chkAuto.IsToggled = Preferences.Get("auto", false);
         }
@@ -104,6 +105,12 @@ namespace ClienteFTP
         private void ChkAuto_Toggled(object sender, ToggledEventArgs e)
         {
             Preferences.Set("auto", chkAuto.IsToggled);
+        }
+
+        private void BtnConfigUsuarios_Clicked(object sender, EventArgs e)
+        {
+            App.paginaUsuarios = new PaginaUsuarios();
+            ((NavigationPage)this.Parent).PushAsync(App.paginaUsuarios);
         }
     }
 }

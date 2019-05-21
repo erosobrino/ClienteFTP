@@ -19,6 +19,8 @@ namespace ClienteFTP
         public static PaginaConfiguracion paginaConfiguracion = null;
         public static ConfigUsuario configUsuario = null;
         public static PaginaInfo paginaInfo = null;
+        public static PaginaUsuarios paginaUsuarios = null;
+        public static PaginaModificacionUsuario paginaModificacionUsuario = null;
 
         public static string nombre;
         public static string pass;
