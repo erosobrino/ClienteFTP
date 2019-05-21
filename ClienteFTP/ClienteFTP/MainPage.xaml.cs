@@ -199,7 +199,7 @@ namespace ClienteFTP
 
         private void descargaArchivo()
         {
-            while (parar)
+            while (!parar)
             {
                 if (listener != null)
                     if (listener.Pending())

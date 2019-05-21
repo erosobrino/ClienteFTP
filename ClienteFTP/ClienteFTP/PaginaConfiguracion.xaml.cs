@@ -24,7 +24,7 @@ namespace ClienteFTP
             switch (Device.RuntimePlatform)
             {
                 case Device.Android:
-                    cboLugarDescarga.Items.Add("Descargas");
+                    cboLugarDescarga.Items.Add("Raiz");
                     break;
                 case Device.UWP:
                     cboLugarDescarga.Items.Add("Descargas");
