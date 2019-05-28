@@ -205,7 +205,7 @@ namespace ClienteFTP
                     if (listener.Pending())
                     {
                         tcpClient = listener.AcceptTcpClient();
-
+                       
                         ElementoLista elementoSeleccionado = (ElementoLista)Listado.SelectedItem;
 
                         switch (interfazCodigo.GuardarFichero(elementoSeleccionado.Nombre, tcpClient.GetStream(), App.lugarDescargaId).Result)
